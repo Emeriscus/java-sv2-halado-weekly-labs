@@ -3,8 +3,7 @@ package week01.webshop.utils;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static week01.webshop.utils.UserValidator.isValidEmail;
-import static week01.webshop.utils.UserValidator.isValidPassword;
+import static week01.webshop.utils.UserValidator.*;
 
 class UserValidatorTest {
 
@@ -46,4 +45,15 @@ class UserValidatorTest {
         assertFalse(isValidPassword(""));
     }
 
+    @Test
+    void validateUserWithValidUserTest() {
+        assertTrue(validateUser("test@test.hu", "dffbxfbDDD.77"));
+    }
+
+    @Test
+    void validateUserWithInvalidUserTest() {
+        assertFalse(validateUser("test@test.hu", "dffb"));
+        assertFalse(validateUser("test.test.hu", "dffbxfbDDD.77"));
+        assertFalse(validateUser("test.test.hu", "dff"));
+    }
 }

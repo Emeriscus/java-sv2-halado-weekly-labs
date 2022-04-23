@@ -32,9 +32,9 @@ public class OrderDao {
 
     public List<Order> listOrdersByUserId(long userId) {
         //language=sql
-        return jdbcTemplate.query("select * from orders where user_id=?", (rs, rowNum) -> new Order(
-                rs.getLong("product_id"), rs.getLong("product_amount"),
-                rs.getTimestamp("order_date").toLocalDateTime()
-        ), userId);
+        return jdbcTemplate.query("select * from orders where user_id=?", (rs, rowNum) -> new Order
+                (rs.getLong("order_id"), rs.getLong("product_id"), rs.getLong("product_amount"),
+                        rs.getTimestamp("order_date").toLocalDateTime()
+                ), userId);
     }
 }
