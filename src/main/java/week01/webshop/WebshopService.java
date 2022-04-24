@@ -58,18 +58,9 @@ public class WebshopService {
 
     public void addToCart(long productId, long quantity) {
         validateLoggedIn();
-        long totalQuantity;
-        if (cart.containsKey(productId)) {
-            totalQuantity = cart.get(productId) + quantity;
-        } else {
-            totalQuantity = quantity;
-        }
+        long totalQuantity = (cart.containsKey(productId) ? cart.get(productId) : 0) + quantity;
         validateStock(productId, totalQuantity);
-        if (cart.containsKey(productId)) {
-            cart.put(productId, cart.get(productId) + quantity);
-        } else {
-            cart.put(productId, quantity);
-        }
+        cart.put(productId, totalQuantity);
     }
 
     public void removeFromCart(long productId) {
@@ -77,8 +68,9 @@ public class WebshopService {
         cart.remove(productId);
     }
 
-    public void saveCartToOrders(long currentUserId, Map<Long, Long> cart) {
+    public void saveCartToOrders() {
         validateLoggedIn();
+        validateCartNotEmpty();
         List<Order> orders = convertCartToOrders(cart);
         cart.forEach(this::validateStock);
         cart.forEach((k, v) -> productDao.updateStockById(k, -v));
@@ -94,14 +86,20 @@ public class WebshopService {
         return result;
     }
 
-    public List<Order> listAllOrdersByUserId(long userId) {
+    public List<Order> listAllOrdersByCurrentUser() {
         validateLoggedIn();
-        return orderDao.listOrdersByUserId(userId);
+        return orderDao.getOrdersByUserId(currentUserId);
     }
 
     private void validateLoggedIn() {
         if (!loggedIn) {
             throw new IllegalStateException("Not logged in");
+        }
+    }
+
+    private void validateCartNotEmpty() {
+        if (cart.isEmpty()) {
+            throw new IllegalStateException("Cart is empty");
         }
     }
 
@@ -111,5 +109,4 @@ public class WebshopService {
             throw new IllegalStateException("There are not enough products in stock, only " + stock + " pieces");
         }
     }
-
 }

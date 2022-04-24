@@ -128,10 +128,10 @@ class WebshopServiceTest {
         webshopService.addToCart(1, 3);
         webshopService.addToCart(2, 5);
 
-        webshopService.saveCartToOrders(1, webshopService.getCart());
+        webshopService.saveCartToOrders();
         assertEquals(0, webshopService.getCart().size());
 
-        List<Order> orders = webshopService.listAllOrdersByUserId(webshopService.getCurrentUserId());
+        List<Order> orders = webshopService.listAllOrdersByCurrentUser();
 
         assertEquals(2, orders.size());
         assertEquals(1, orders.get(0).getId());
@@ -144,4 +144,21 @@ class WebshopServiceTest {
         assertEquals(0, productDao.getStockByProductId(2));
     }
 
+    @Test
+    void saveCartToOrdersInvalidQuantityTest() {
+        webshopService.logIn("test@test.com", "dsfdfaDASF.88");
+        webshopService.addToCart(2, 5);
+        productDao.updateStockById(2, -1);
+
+        Exception e = assertThrows(IllegalStateException.class, () -> webshopService.saveCartToOrders());
+        assertEquals("There are not enough products in stock, only 4 pieces", e.getMessage());
+    }
+
+    @Test
+    void saveCartToOrdersWithEmptyCartTest() {
+        webshopService.logIn("test@test.com", "dsfdfaDASF.88");
+
+        Exception e = assertThrows(IllegalStateException.class, () -> webshopService.saveCartToOrders());
+        assertEquals("Cart is empty", e.getMessage());
+    }
 }

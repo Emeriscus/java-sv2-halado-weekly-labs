@@ -4,6 +4,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.sql.DataSource;
+import java.util.List;
 
 public class ProductDao {
 
@@ -19,6 +20,13 @@ public class ProductDao {
                 product.getName(), product.getPrice(), product.getStock());
     }
 
+    public List<Product> getAllProducts() {
+        //language=sql
+        return jdbcTemplate.query("select * from products",
+                (rs, rowNum) -> new Product(rs.getLong("product_id"), rs.getString("product_name"),
+                        rs.getInt("price"), rs.getInt("stock")));
+    }
+
     public long getStockByProductId(long productId) {
         //language=sql
         try {
@@ -29,7 +37,7 @@ public class ProductDao {
         }
     }
 
-    public void updateStockById(Long productId, long quantity) {
+    public void updateStockById(long productId, long quantity) {
         //language=sql
         jdbcTemplate.update("update products set stock=stock+? where product_id=?", quantity, productId);
     }

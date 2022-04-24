@@ -37,14 +37,4 @@ public class Order {
     public LocalDateTime getOrderTime() {
         return orderTime;
     }
-
-    @Override
-    public String toString() {
-        return "Order{" +
-                "id=" + id +
-                ", productId=" + productId +
-                ", amount=" + amount +
-                ", orderTime=" + orderTime +
-                '}';
-    }
 }

@@ -21,7 +21,7 @@ public class OrderDao {
         }
     }
 
-    public List<Order> listAllOrders() {
+    public List<Order> getAllOrders() {
         //language=sql
         return jdbcTemplate.query(
                 "select * from orders", (rs, rownum) -> new Order(
@@ -30,7 +30,7 @@ public class OrderDao {
                 ));
     }
 
-    public List<Order> listOrdersByUserId(long userId) {
+    public List<Order> getOrdersByUserId(long userId) {
         //language=sql
         return jdbcTemplate.query("select * from orders where user_id=?", (rs, rowNum) -> new Order
                 (rs.getLong("order_id"), rs.getLong("product_id"), rs.getLong("product_amount"),

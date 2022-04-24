@@ -31,30 +31,35 @@ class OrderDaoTest {
         flyway.migrate();
 
         orderDao = new OrderDao(dataSource);
-    }
 
-
-    @Test
-    void addOrdersTest() {
         orderDao.addOrders(1, List.of(new Order(1, 3, LocalDateTime.now()),
                 new Order(2, 4, LocalDateTime.now()),
                 new Order(3, 2, LocalDateTime.now())));
         orderDao.addOrders(2, List.of(new Order(1, 2, LocalDateTime.now())));
-        List<Order> results = orderDao.listAllOrders();
-        assertEquals(4, results.size());
+    }
+
+    @Test
+    void addOrdersTest() {
+        orderDao.addOrders(3, List.of(new Order(1, 5, LocalDateTime.now())));
+
+        List<Order> results = orderDao.getAllOrders();
+        assertEquals(5, results.size());
         assertEquals(2, results.get(3).getAmount());
     }
 
     @Test
-    void listOrdersByUserIdTest() {
-        orderDao.addOrders(1, List.of(new Order(1, 3, LocalDateTime.now()),
-                new Order(2, 4, LocalDateTime.now()),
-                new Order(3, 2, LocalDateTime.now())));
-        orderDao.addOrders(2, List.of(new Order(1, 2, LocalDateTime.now())));
-        List<Order> result = orderDao.listOrdersByUserId(1);
+    void getAllOrders() {
+        orderDao.addOrders(4, List.of(new Order(10, 150, LocalDateTime.now())));
+        List<Order> result = orderDao.getAllOrders();
+        assertEquals(5, result.size());
+    }
+
+    @Test
+    void getOrdersByUserIdTest() {
+        List<Order> result = orderDao.getOrdersByUserId(1);
         assertEquals(3, result.size());
 
-        List<Order> newResult = orderDao.listOrdersByUserId(2);
+        List<Order> newResult = orderDao.getOrdersByUserId(2);
         assertEquals(1, newResult.size());
     }
 }
